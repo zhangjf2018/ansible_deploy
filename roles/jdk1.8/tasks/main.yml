@@ -1,0 +1,24 @@
+
+- name: create remote dir
+  file: path={{jdk.remote_dir}} state=directory
+
+- name: create install dir
+  file: path={{jdk.install_dir}} state=directory
+
+- name: copy jdk to remote host
+  copy: src={{jdk.filename}} dest={{jdk.remote_dir}}
+
+- name: tar zxvf jdk
+  shell: tar zxvf {{jdk.remote_dir}}/{{jdk.filename}} -C {{jdk.install_dir}} --strip-components 1
+  #unarchive: src={{jdk.remote_dir}}/{{jdk.filename}} dest={{jdk.install_dir}} copy=no
+
+- name: set java env
+  lineinfile: dest={{jdk.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########JDK ENV########"}
+    - {position: EOF, value: "export JAVA_HOME={{jdk.install_dir}}"}
+    - {position: EOF, value: "export JRE_HOME=$JAVA_HOME/jre"}
+    - {position: EOF, value: "export CLASSPATH=.:%JAVA_HOME%/lib/dt.jar:%JAVA_HOME%/lib/tools.jar:%JRE_HOME%/lib"}
+    - {position: EOF, value: "export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH"}
+- name: enable java env
+  shell: source /etc/profile

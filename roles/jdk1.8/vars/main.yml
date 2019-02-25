@@ -1,0 +1,6 @@
+---
+jdk:
+ filename: jdk-8u111-linux-x64.tar.gz
+ remote_dir: /tmp/
+ install_dir: /opt/jdk/
+ env_file: /etc/profile
