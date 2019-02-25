@@ -9,8 +9,14 @@
   copy: src={{jdk.filename}} dest={{jdk.remote_dir}}
 
 - name: tar zxvf jdk
-  shell: tar zxvf {{jdk.remote_dir}}/{{jdk.filename}} -C {{jdk.install_dir}} --strip-components 1
+  #shell: tar zxvf {{jdk.remote_dir}}/{{jdk.filename}} -C {{jdk.install_dir}} --strip-components 1
   #unarchive: src={{jdk.remote_dir}}/{{jdk.filename}} dest={{jdk.install_dir}} copy=no
+  unarchive: 
+    src: "{{jdk.remote_dir}}/{{jdk.filename}}"
+    dest: "{{jdk.install_dir}}"
+    copy: no
+    extra_opts:
+     - --strip-components=1
 
 - name: set java env
   lineinfile: dest={{jdk.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
