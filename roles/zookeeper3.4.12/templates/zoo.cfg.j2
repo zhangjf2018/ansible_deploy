@@ -1,10 +1,15 @@
 tickTime={{ zk.tick_time }}
+# 快照日志目录
 dataDir={{ zk.data_dir }}
-#dataLogDir={{ zk.log_dir }}
+# 事务日志目录(未配置则存储在dataDir)
+dataLogDir={{ zk.transaction_log_dir }}
 clientPort={{ zk.client_port }}
 initLimit={{ zk.init_limit }}
 syncLimit={{ zk.sync_limit }}
 maxClientCnxns={{ zk.max_client_connections }}
+
+#autopurge.snapRetainCount 保留的事务日志、快照日志文件数目，默认3个
+#autopurge.purgeInterval 清理频率，单位是小时，默认1小时
 
 {#
 {% if zookeeper_autopurge_purgeInterval > 0 %}

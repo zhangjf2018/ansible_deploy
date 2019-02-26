@@ -10,7 +10,8 @@
   file: path={{item}} state=directory
   with_items:
     - "{{zk.data_dir}}"
-    - "{{zk.log_dir}}"
+    - "{{zk.transaction_log_dir}}"
+    - "{{zk.log4j_dir}}"
 
 - name: copy jdk to remote host
   copy: src={{zk.filename}} dest={{zk.remote_dir}}
@@ -23,8 +24,17 @@
     extra_opts:
      - --strip-components=1
 
-- name: Write myid file.
+- name: Write myid file
   template: src=myid.j2 dest={{zk.data_dir}}/myid  
 
-- name: Write zoo file.
+- name: Write zoo file
   template: src=zoo.cfg.j2 dest={{zk.install_dir}}/conf/zoo.cfg 
+
+- name: Write zoo service file
+  template: src=zookeeper.service.j2 dest=/lib/systemd/system/zookeeper.service
+  when: ansible_service_mgr == 'systemd'  
+  notify:
+    - reload systemctl daemon
+    - restart zookeeper
+
+

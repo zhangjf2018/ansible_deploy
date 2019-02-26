@@ -1,0 +1,26 @@
+# {{ansible_managed}}
+
+[Unit]
+Description=ZooKeeper
+After=network.target
+Wants=network.target
+
+[Service]
+Type=forking
+#User=zookeeper
+#Group=zookeeper
+
+Environment='JAVA_HOME={{JAVA_HOME}}'
+Environment='ZOO_LOG_DIR={{zk.log4j_dir}}'
+
+ExecStart={{zk.install_dir}}/bin/zkServer.sh start
+ExecStop={{zk.install_dir}}/bin/zkServer.sh stop
+ExecReload={{zk.install_dir}}/bin/zkServer.sh restart
+
+Restart=always
+RestartSec=3
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+

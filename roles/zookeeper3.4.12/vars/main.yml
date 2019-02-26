@@ -6,7 +6,8 @@ zk:
  sync_limit: 5
  max_client_connections: 65535
  data_dir: /data/zookeeper/
- log_dir: /data/zookeeper/log/
+ transaction_log_dir: /data/zookeeper/transaction_log/
+ log4j_dir: /data/zookeeper/log
 # autopurge_snapRetainCount: 3
 # autopurge_purgeInterval: 1 
 
@@ -19,4 +20,5 @@ zookeeper_hosts_hostname: "{{inventory_hostname}}"
 zookeeper_hosts: "{{groups['zookeepers']}}"
 zookeeper_cluster_ports: "2888:3888"
 
+JAVA_HOME: /opt/jdk/
 
