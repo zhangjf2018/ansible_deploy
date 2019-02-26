@@ -1,0 +1,30 @@
+---
+
+- name: "create remote dir {{zk.remote_dir}}"
+  file: path={{zk.remote_dir}} state=directory
+
+- name: "create install dir {{zk.install_dir}}"
+  file: path={{zk.install_dir}} state=directory
+
+- name: "Create zookeeper data directory."
+  file: path={{item}} state=directory
+  with_items:
+    - "{{zk.data_dir}}"
+    - "{{zk.log_dir}}"
+
+- name: copy jdk to remote host
+  copy: src={{zk.filename}} dest={{zk.remote_dir}}
+
+- name: "unzip install package {{zk.filename}} to {{zk.install_dir}}"
+  unarchive: 
+    src: "{{zk.remote_dir}}/{{zk.filename}}"
+    dest: "{{zk.install_dir}}"
+    copy: no
+    extra_opts:
+     - --strip-components=1
+
+- name: Write myid file.
+  template: src=myid.j2 dest={{zk.data_dir}}/myid  
+
+- name: Write zoo file.
+  template: src=zoo.cfg.j2 dest={{zk.install_dir}}/conf/zoo.cfg 

@@ -1,0 +1,22 @@
+---
+zk:
+ client_port: 2181
+ tick_time: 2000
+ init_limit: 10
+ sync_limit: 5
+ max_client_connections: 65535
+ data_dir: /data/zookeeper/
+ log_dir: /data/zookeeper/log/
+# autopurge_snapRetainCount: 3
+# autopurge_purgeInterval: 1 
+
+ filename: zookeeper-3.4.12.tar.gz
+ remote_dir: /tmp/
+ install_dir: /opt/zookeeper/
+ env_file: /etc/profile
+
+zookeeper_hosts_hostname: "{{inventory_hostname}}"
+zookeeper_hosts: "{{groups['zookeepers']}}"
+zookeeper_cluster_ports: "2888:3888"
+
+
