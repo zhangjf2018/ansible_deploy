@@ -1,0 +1,15 @@
+---
+hadoop:
+ filename: hadoop-2.7.7.tar.gz
+ remote_dir: /tmp/
+ install_dir: /home/hadoop/hadoop
+ env_file: /etc/profile
+ journalnode_dir: /data/hadoop/journalnode/data/
+ tmp_dir: /data/hadoop/hadoop/
+
+hadoop_slaves:
+ - node2
+ - node3
+ - node4
+
+JAVA_HOME: /opt/jdk/

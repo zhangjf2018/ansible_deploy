@@ -1,0 +1,12 @@
+---
+- hosts: ALL
+  remote_user: root
+  tasks:  
+    - name: create sys user
+      user: 
+        name: "{{item.name}}" 
+        password: "$6$0v6Sv/GKSG5xItmB$7yuTRWOi0F/2C6pi7p37vqIk9cn4TIOHA1ClxcZ1WP5DAkBFnpY6UQO6cku5t74DdPZG2lt2sv.Z96kM2k2L50" 
+        update_password: "always"
+        generate_ssh_key: "yes"
+      with_items:
+        - {name: "hadoop"}

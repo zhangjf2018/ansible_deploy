@@ -1,0 +1,9 @@
+---
+- hosts: hadoop        # 组里的所有远程主机
+  gather_facts: False
+  tasks:
+    - name: install sshkey
+      authorized_key: 
+        user: hadoop
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+        state: present

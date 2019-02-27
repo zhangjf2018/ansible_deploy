@@ -1,0 +1,79 @@
+---
+
+- name: "create remote dir {{hadoop.remote_dir}}"
+  file: path={{hadoop.remote_dir}} state=directory
+
+- name: "create install dir {{hadoop.install_dir}}"
+  file: path={{hadoop.install_dir}} state=directory
+
+- name: "Create hadoop data directory."
+  file: path={{item}} state=directory
+  with_items:
+    - "{{hadoop.journalnode_dir}}"
+    - "{{hadoop.tmp_dir}}"
+
+- name: copy {{hadoop.filename}} to remote host {{hadoop.remote_dir}}
+  copy: src={{hadoop.filename}} dest={{hadoop.remote_dir}}
+
+- name: "unzip install package {{hadoop.filename}} to {{hadoop.install_dir}}"
+  unarchive: 
+    src: "{{hadoop.remote_dir}}/{{hadoop.filename}}"
+    dest: "{{hadoop.install_dir}}"
+    copy: no
+    extra_opts:
+     - --strip-components=1
+
+- name: Write hadoop-env.sh file
+  template: src=hadoop-env.sh.j2 dest={{hadoop.install_dir}}/etc/hadoop/hadoop-env.sh
+
+- name: Write hdfs-site.xml file
+  template: src=hdfs-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/hdfs-site.xml
+
+- name: Write core-site.xml file
+  template: src=core-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/core-site.xml
+
+- name: Write slaves file
+  template: src=slaves.j2 dest={{hadoop.install_dir}}/etc/hadoop/slaves
+
+- name: start journalnode
+  shell: "{{hadoop.install_dir}}/sbin/hadoop-daemon.sh start journalnode"
+  when: jnnode == "true"
+
+- name: format active namenode hdfs
+  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -format"
+  when: namenode_active == "true"
+
+- name: start active namenode hdfs
+  shell: "{{hadoop.install_dir}}/sbin/hadoop-daemon.sh start namenode"
+  when: namenode_active == "true"
+
+- name: format standby namenode hdfs
+  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -bootstrapStandby"
+  when: namenode_standby == "true"
+
+- name: stop active namenode hdfs
+  shell: "{{hadoop.install_dir}}/sbin/hadoop-daemon.sh stop namenode"
+  when: namenode_active == "true"
+
+- name: format ZKFC
+  shell: "{{hadoop.install_dir}}/bin/hdfs zkfc -formatZK"
+  when: namenode_active == "true"
+
+- name: start namenode
+  shell: "{{hadoop.install_dir}}/sbin/start-dfs.sh"
+  when: namenode_active == "true"
+
+#- name: start yarn
+#  shell: /usr/local/hadoop/sbin/start-yarn.sh
+#  become: true
+#  become_method: su
+#  become_user: hadoop
+#  when: namenode_active == "true"
+#
+#- name: start standby rm
+#  shell: /usr/local/hadoop/sbin/yarn-daemon.sh start resourcemanager
+#  become: true
+#  become_method: su
+#  become_user: hadoop
+#  when: namenode_standby == "true"
+
