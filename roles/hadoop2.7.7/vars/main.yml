@@ -3,9 +3,55 @@ hadoop:
  filename: hadoop-2.7.7.tar.gz
  remote_dir: /tmp/
  install_dir: /home/hadoop/hadoop
- env_file: /etc/profile
+ env_file: /home/hadoop/.bash_profile
  journalnode_dir: /data/hadoop/journalnode/data/
  tmp_dir: /data/hadoop/hadoop/
+ pid_dir: /home/hadoop/hadoop/pid/
+ log_dir: /data/hadoop/log/
+
+ 
+# python -c 'import math ; print int(math.log(N) * 20)'  
+# N 集群服务器数量
+# default 10
+dfs_namenode_handler_count: 100
+# default 10
+dfs_datanode_handler_count: 100
+
+# default file://${hadoop.tmp.dir}/dfs/name
+# 多个目录,逗号分隔
+dfs_namenode_name_dir: /data/hadoop/hadoop/dfs/name/
+
+# default file://${hadoop.tmp.dir}/dfs/data
+# 多个目录,逗号分隔
+dfs_datanode_data_dir: /data/hadoop/hadoop/dfs/data/ 
+
+# 使用df -h 显示：总磁盘大小2000G，使用1930G，剩余40G，就会发现：2000G -（1930G+40G）= 30G，还差了30G空间。
+# 就是因为这30G空间的问题导致你磁盘写满，如果你配置datanode hdfs-site.xml里的dfs.datanode.du.reserved小于30G的话，而我们设置的是20G，所以磁盘就被写满 了，预留空间就没有起到实际作用
+# hadoop dfs.datanode.du.reserved的值 = 总磁盘大小 - （使用的空间 + 剩余空间 ）+ 设置的预留空间
+# 比如： 
+# 在上面的基础上你设置预留空间为20G，那么dfs.datanode.du.reserved就可以设置为： 
+# 2000G -（1930G + 40G） + 20G = 50G
+# 80G: 80 * 1024 * 1024 * 1024 = 85899345920
+dfs_datanode_du_reserved: 85899345920
+# 副本数量
+dfs_replication: 3
+
+# Specifies the maximum amount of bandwidth that each datanode can utilize for the balancing purpose in term of the number of bytes per second.
+# default 1048576 bytes
+# 1024 * 1024 = 1M/s
+# 30 * 1024 * 1024 = 30 M/s
+dfs_datanode_balance_bandwidthPerSec: 31457280
+
+# Specifies the maximum number of threads to use for transferring data in and out of the DN.
+# default 4096
+# datanode上负责进行文件操作的线程数。如果需要处理的文件过多，而这个参数设置得过低就会有一部分文件
+# 处理不过来,如果这样的线程过多，系统内存就会暴掉.
+dfs_datanode_max_transfer_threads: 4096
+
+########## core-site.xml #################
+# Indicates the length of the listen queue for servers accepting client connections.
+# default 128
+ipc_server_listen_queue_size: 1024
 
 hadoop_slaves:
  - node2

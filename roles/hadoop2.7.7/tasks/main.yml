@@ -11,6 +11,8 @@
   with_items:
     - "{{hadoop.journalnode_dir}}"
     - "{{hadoop.tmp_dir}}"
+    - "{{hadoop.pid_dir}}"
+    - "{{hadoop.log_dir}}"
 
 - name: copy {{hadoop.filename}} to remote host {{hadoop.remote_dir}}
   copy: src={{hadoop.filename}} dest={{hadoop.remote_dir}}
@@ -31,6 +33,12 @@
 
 - name: Write core-site.xml file
   template: src=core-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/core-site.xml
+
+- name: Write mapred-site.xml file
+  template: src=mapred-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/mapred-site.xml
+
+- name: Write yarn-site.xml file
+  template: src=yarn-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/yarn-site.xml
 
 - name: Write slaves file
   template: src=slaves.j2 dest={{hadoop.install_dir}}/etc/hadoop/slaves

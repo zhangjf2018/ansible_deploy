@@ -74,4 +74,49 @@
   <value>true</value>
 </property>
 
+<property>
+  <name>dfs.replication</name>
+  <value>{{dfs_replication}}</value>
+</property>
+
+<!--
+#python -c 'import math ; print int(math.log(N) * 20)'  
+#N 集群服务器数量
+-->
+<property>
+  <name>dfs.namenode.handler.count</name>
+  <value>{{dfs_namenode_handler_count}}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.handler.count</name>
+  <value>{{dfs_datanode_handler_count}}</value>
+</property>
+
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>{{dfs_namenode_name_dir}}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.data.dir</name>
+  <value>{{dfs_datanode_data_dir}}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.du.reserved</name>
+  <value>{{dfs_datanode_du_reserved}}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.balance.bandwidthPerSec</name> 
+  <value>{{dfs_datanode_balance_bandwidthPerSec}}</value> 
+</property>
+
+<!-- default 4096 -->
+<property>
+  <name>dfs.datanode.max.transfer.threads</name>  
+  <value>{{dfs_datanode_max_transfer_threads}}</value>  
+</property>
+
 </configuration>
