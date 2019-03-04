@@ -1,0 +1,23 @@
+[jdk]
+172.18.201.9
+172.18.201.10
+172.18.201.11
+172.18.201.12
+
+[zookeepers]
+node2 
+node3 
+node4 
+
+[ALL]
+node1
+node2
+node3
+node4
+
+[hadoop]
+node1 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=true  namenode_standby=false jnnode=false
+node2 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false namenode_standby=true  jnnode=true
+node3 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false namenode_standby=false jnnode=true
+node4 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false namenode_standby=false jnnode=true
+
