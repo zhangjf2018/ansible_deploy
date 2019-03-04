@@ -48,7 +48,7 @@
   when: jnnode == "true"
 
 - name: format active namenode hdfs
-  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -format"
+  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -format -force"
   when: namenode_active == "true"
 
 - name: start active namenode hdfs
@@ -56,7 +56,7 @@
   when: namenode_active == "true"
 
 - name: format standby namenode hdfs
-  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -bootstrapStandby"
+  shell: "{{hadoop.install_dir}}/bin/hdfs namenode -bootstrapStandby -force"
   when: namenode_standby == "true"
 
 - name: stop active namenode hdfs
@@ -64,24 +64,22 @@
   when: namenode_active == "true"
 
 - name: format ZKFC
-  shell: "{{hadoop.install_dir}}/bin/hdfs zkfc -formatZK"
+  shell: "{{hadoop.install_dir}}/bin/hdfs zkfc -formatZK -force"
   when: namenode_active == "true"
+
+- name: stop journalnode
+  shell: "{{hadoop.install_dir}}/sbin/hadoop-daemon.sh stop journalnode"
+  when: jnnode == "true"
 
 - name: start namenode
   shell: "{{hadoop.install_dir}}/sbin/start-dfs.sh"
   when: namenode_active == "true"
 
-#- name: start yarn
-#  shell: /usr/local/hadoop/sbin/start-yarn.sh
-#  become: true
-#  become_method: su
-#  become_user: hadoop
-#  when: namenode_active == "true"
-#
-#- name: start standby rm
-#  shell: /usr/local/hadoop/sbin/yarn-daemon.sh start resourcemanager
-#  become: true
-#  become_method: su
-#  become_user: hadoop
-#  when: namenode_standby == "true"
+- name: start yarn on namenode_active
+  shell: "{{hadoop.install_dir}}/sbin/start-yarn.sh"
+  when: namenode_active == "true"
+
+- name: start standby rm on namenode_standby
+  shell: "{{hadoop.install_dir}}/sbin/yarn-daemon.sh start resourcemanager"
+  when: namenode_standby == "true"
 

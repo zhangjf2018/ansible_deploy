@@ -53,6 +53,14 @@ dfs_datanode_max_transfer_threads: 4096
 # default 128
 ipc_server_listen_queue_size: 1024
 
+
+########## yarn-site.xml #################
+# default ${hadoop.tmp.dir}/nm-local-dir
+yarn.nodemanager.local-dirs: 
+
+# default ${yarn.log.dir}/userlogs
+yarn.nodemanager.log-dirs: 
+
 hadoop_slaves:
  - node2
  - node3
