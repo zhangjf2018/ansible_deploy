@@ -25,6 +25,18 @@
     extra_opts:
      - --strip-components=1
 
+- name: set hadoop env
+  tags: env
+  lineinfile: dest={{hadoop.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########HADOOP ENV########"}
+    - {position: EOF, value: "export HADOOP_HOME={{hadoop.install_dir}}"}
+    - {position: EOF, value: "export PATH=$HADOOP_HOME/bin:$PATH"}
+    
+- name: enable hadoop env
+  tags: env
+  shell: "source {{hadoop.env_file}}"
+
 - name: Write hadoop-env.sh file
   template: src=hadoop-env.sh.j2 dest={{hadoop.install_dir}}/etc/hadoop/hadoop-env.sh
 
