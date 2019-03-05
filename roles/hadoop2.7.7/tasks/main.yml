@@ -13,6 +13,13 @@
     - "{{hadoop.tmp_dir}}"
     - "{{hadoop.pid_dir}}"
     - "{{hadoop.log_dir}}"
+    - "{{yarn_log_dir}}"
+    - "{{yarn_pid_dir}}"
+    - "{{yarn_nodemanager_local_dirs}}"
+    - "{{yarn_nodemanager_log_dirs}}"
+    - "{{yarn_app_mapreduce_am_staging_dir}}"
+    - "{{mapreduce_jobhistory_intermediate_done_dir}}"
+    - "{{mapreduce_jobhistory_done_dir}}"
 
 - name: copy {{hadoop.filename}} to remote host {{hadoop.remote_dir}}
   copy: src={{hadoop.filename}} dest={{hadoop.remote_dir}}
@@ -39,6 +46,9 @@
 
 - name: Write hadoop-env.sh file
   template: src=hadoop-env.sh.j2 dest={{hadoop.install_dir}}/etc/hadoop/hadoop-env.sh
+
+- name: Write yarb-env.sh file
+  template: src=yarn-env.sh.j2 dest={{hadoop.install_dir}}/etc/hadoop/yarn-env.sh
 
 - name: Write hdfs-site.xml file
   template: src=hdfs-site.xml.j2 dest={{hadoop.install_dir}}/etc/hadoop/hdfs-site.xml

@@ -63,6 +63,23 @@
   <value>50</value>
 </property>
 
+<!-- default /tmp/hadoop-yarn/staging -->
+<property>
+  <name>yarn.app.mapreduce.am.staging-dir</name>
+  <value>{{yarn_app_mapreduce_am_staging_dir}}</value>
+</property>
+
+<!-- default ${yarn.app.mapreduce.am.staging-dir}/history/done -->
+<property>
+  <name>mapreduce.jobhistory.done-dir</name>
+  <value>{{mapreduce_jobhistory_done_dir}}</value>
+</property>
+
+<!-- default ${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate -->
+<property>
+  <name>mapreduce.jobhistory.intermediate-done-dir</name>
+  <value>{{mapreduce_jobhistory_intermediate_done_dir}}</value>
+</property>
 
 <!-- 
 # Larger resource limit for maps.

@@ -10,6 +10,7 @@ hadoop:
  log_dir: /data/hadoop/log/
 
  
+########## hdfs-site.xml #################
 # python -c 'import math ; print int(math.log(N) * 20)'  
 # N 集群服务器数量
 # default 10
@@ -56,10 +57,40 @@ ipc_server_listen_queue_size: 1024
 
 ########## yarn-site.xml #################
 # default ${hadoop.tmp.dir}/nm-local-dir
-yarn.nodemanager.local-dirs: 
-
+# 存放application执行本地文件的根目录，执行完毕后删除，按用户名存储
+yarn_nodemanager_local_dirs: /data/hadoop/hadoop/nm-local-dir
 # default ${yarn.log.dir}/userlogs
-yarn.nodemanager.log-dirs: 
+# 存放application本地执行日志的根目录，执行完毕后删除，按用户名存储
+yarn_nodemanager_log_dirs: /data/hadoop/yarn/log/userlogs
+# 日志的保留时间,log aggregation没有enable时，有效
+yarn_nodemanager_log_retain_second: 604800  
+
+# 是否开启日志聚合功能
+yarn_log_aggregation_enable: true
+# 收集的日志的保留时间，以秒为单位，到时后被删除，保留30天后删除
+yarn_log_aggregation_retain_seconds: 2592000
+# log server的地址 http://hostname:19888/jobhistory/logs
+#yarn.log.server.url: 
+# /app-logs  聚合日志后在hdfs的存放地址
+yarn_nodemanager_remote_app_log_dir: /app-log
+# 集合日志后的存放地址由 ${remote-app-log-dir}/${user}/{thisParam}构成
+yarn_nodemanager_remote_app_log_dir_suffix: logs
+#  application执行结束后延迟10min删除本地文件及日志
+yarn_nodemanager_delete_debug_delay_sec: 600
+
+########## mapred-site.xml #################
+# default /tmp/hadoop-yarn/staging
+yarn_app_mapreduce_am_staging_dir: /data/hadoop/hadoop-yarn/staging
+# default ${yarn.app.mapreduce.am.staging-dir}/history/done
+mapreduce_jobhistory_done_dir: /data/hadoop/hadoop-yarn/staging/history/done
+# default ${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate
+mapreduce_jobhistory_intermediate_done_dir: /data/hadoop/hadoop-yarn/staging/history/done_intermediate
+
+########## yarn-env.sh #################
+# default $HADOOP_YARN_HOME/logs
+yarn_log_dir: /data/hadoop/yarn/log
+# default /tmp yarn-hadoop-nodemanager.pid yarn-hadoop-resourcemanager.pid
+yarn_pid_dir: /home/hadoop/hadoop/pid/
 
 hadoop_slaves:
  - node2

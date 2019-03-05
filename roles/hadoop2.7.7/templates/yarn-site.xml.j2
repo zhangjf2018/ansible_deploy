@@ -92,5 +92,43 @@
   <name>yarn.client.failover-proxy-provider</name>
   <value>org.apache.hadoop.yarn.client.ConfiguredRMFailoverProxyProvider</value>
 </property>
+<!-- default ${hadoop.tmp.dir}/nm-local-dir  -->
+<property>
+  <name>yarn.nodemanager.local-dirs</name>
+  <value>{{yarn_nodemanager_local_dirs}}</value>
+</property>
+
+<!-- default ${yarn.log.dir}/userlogs  -->
+<property>
+  <name>yarn.nodemanager.log-dirs</name>
+  <value>{{yarn_nodemanager_log_dirs}}</value>
+</property>
+<property>
+  <name>yarn.nodemanager.log.retain-second</name>
+  <value>{{yarn_nodemanager_log_retain_second}}</value>
+</property>
+
+<!-- yarn 日志聚合 -->
+<!-- default false  -->
+<property>
+  <name>yarn.log-aggregation-enable</name>
+  <value>{{yarn_log_aggregation_enable}}</value>
+</property>
+<property>
+  <name>yarn.log-aggregation.retain-seconds</name>
+  <value>{{yarn_log_aggregation_retain_seconds}}</value>
+</property>
+<property>
+  <name>yarn.nodemanager.remote-app-log-dir</name>
+  <value>{{yarn_nodemanager_remote_app_log_dir}}</value>
+</property>
+<property>
+  <name>yarn.nodemanager.remote-app-log-dir-suffix</name>
+  <value>{{yarn_nodemanager_remote_app_log_dir_suffix}}</value>
+</property>
+<property>
+  <name>yarn.nodemanager.delete.debug-delay-sec</name>
+  <value>{{yarn_nodemanager_delete_debug_delay_sec}}</value>
+</property>
 
 </configuration>
