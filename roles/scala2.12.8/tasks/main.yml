@@ -1,0 +1,26 @@
+---
+- name: create remote dir {{scala.remote_dir}}
+  file: path={{scala.remote_dir}} state=directory
+
+- name: create install dir {{scala.install_dir}}
+  file: path={{scala.install_dir}} state=directory
+
+- name: copy {{scala.filename}} to remote host
+  copy: src={{scala.filename}} dest={{scala.remote_dir}}
+
+- name: tar zxvf {{scala.filename}}
+  unarchive: 
+    src: "{{scala.remote_dir}}/{{scala.filename}}"
+    dest: "{{scala.install_dir}}"
+    copy: no
+    extra_opts:
+     - --strip-components=1
+
+- name: set env {{scala.env_file}}
+  lineinfile: dest={{scala.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########SCALA ENV########"}
+    - {position: EOF, value: "export SCALA_HOME={{scala.install_dir}}"}
+    - {position: EOF, value: "export PATH=$SCALA_HOME/bin:$PATH"}
+- name: enable env {{scala.env_file}}
+  shell: source {{scala.env_file}}

@@ -1,0 +1,6 @@
+---
+scala:
+ filename: scala-2.12.8.tgz
+ remote_dir: /tmp/
+ install_dir: /opt/scala
+ env_file: /etc/profile

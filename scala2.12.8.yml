@@ -1,0 +1,5 @@
+---
+- hosts: jdk
+  remote_user: root
+  roles:  
+   - scala2.12.8
