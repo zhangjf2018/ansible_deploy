@@ -82,15 +82,25 @@ yarn_nodemanager_delete_debug_delay_sec: 600
 # default /tmp/hadoop-yarn/staging
 yarn_app_mapreduce_am_staging_dir: /data/hadoop/hadoop-yarn/staging
 # default ${yarn.app.mapreduce.am.staging-dir}/history/done
-mapreduce_jobhistory_done_dir: /data/hadoop/hadoop-yarn/staging/history/done
+# 存在hdfs目录
+mapreduce_jobhistory_done_dir: /mapjob/history/done
 # default ${yarn.app.mapreduce.am.staging-dir}/history/done_intermediate
-mapreduce_jobhistory_intermediate_done_dir: /data/hadoop/hadoop-yarn/staging/history/done_intermediate
+# 存在hdfs目录
+mapreduce_jobhistory_intermediate_done_dir: /mapjob/history/done_intermediate
+# MapReduce JobHistory Server IPC host:port
+mapreduce_jobhistory_address: 0.0.0.0:10020
+# MapReduce JobHistory Server Web UI host:port
+mapreduce_jobhistory_webapp_address: 0.0.0.0:19888
 
 ########## yarn-env.sh #################
 # default $HADOOP_YARN_HOME/logs
 yarn_log_dir: /data/hadoop/yarn/log
 # default /tmp yarn-hadoop-nodemanager.pid yarn-hadoop-resourcemanager.pid
 yarn_pid_dir: /home/hadoop/hadoop/pid/
+
+######### mapred-env.sh #################
+hadoop_mapred_log_dir: /data/hadoop/mapred_log
+hadoop_mapred_pid_dir: /home/hadoop/hadoop/pid
 
 hadoop_slaves:
  - node2
