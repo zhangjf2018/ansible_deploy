@@ -1,5 +1,5 @@
 ---
-- hosts: hadoop
+- hosts: spark
   remote_user: root
   roles:  
    - spark2.4.0

@@ -21,3 +21,8 @@ node2 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false na
 node3 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false namenode_standby=false jnnode=true
 node4 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx namenode_active=false namenode_standby=false jnnode=true
 
+[spark]
+node1 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=true  spark_standby=false 
+node2 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=true  
+node3 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=false 
+node4 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=false 

@@ -4,4 +4,23 @@ spark:
  remote_dir: /tmp/
  install_dir: /home/hadoop/spark
  env_file: /home/hadoop/.bash_profile
- pid_dir: //home/hadoop/spark/pid
+ pid_dir: /home/hadoop/spark/pid
+ log_dir: /data/spark/log
+ history_log: /spark/historylog
+ event_log: /spark/eventlog
+
+zoo_hosts: node2:2181,node3:2181,node4:2181
+JAVA_HOME: /opt/jdk
+SCALA_HOME: /opt/scala
+HADOOP_HOME: /home/hadoop/hadoop
+
+############ spark-env.sh ###################
+spark_history_opts: "-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=10 -Dspark.history.fs.logDirectory=hdfs://node1:8020/spark/historylog/"
+
+############ spark-default.conf #############
+spark_event_log_dir: hdfs://node1:8020/spark/eventlog/
+
+spark_slaves:
+ - node3
+ - node4
+

@@ -65,6 +65,8 @@ yarn_nodemanager_log_dirs: /data/hadoop/yarn/log/userlogs
 # 日志的保留时间,log aggregation没有enable时，有效
 yarn_nodemanager_log_retain_second: 604800  
 
+# 历史日志访问
+yarn_log_server_url: http://node2:19888/jobhistory/logs
 # 是否开启日志聚合功能
 yarn_log_aggregation_enable: true
 # 收集的日志的保留时间，以秒为单位，到时后被删除，保留30天后删除
