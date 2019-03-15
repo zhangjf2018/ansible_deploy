@@ -13,12 +13,24 @@ zoo_hosts: node2:2181,node3:2181,node4:2181
 JAVA_HOME: /opt/jdk
 SCALA_HOME: /opt/scala
 HADOOP_HOME: /home/hadoop/hadoop
+HADOOP_CONFIG_DIR: /home/hadoop/hadoop/etc/hadoop
 
 ############ spark-env.sh ###################
-spark_history_opts: "-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=10 -Dspark.history.fs.logDirectory=hdfs://node1:8020/spark/historylog/"
+# Hadoop 非HA配置
+#spark_history_opts: "-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=10 -Dspark.history.fs.logDirectory=hdfs://node1:8020/spark/historylog/"
+# Hadoop HA 配置方法, dfs.nameservices
+#spark_history_opts: "-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=10 -Dspark.history.fs.logDirectory=hdfs://datastore/spark/historylog/"
+spark_history_opts: ""
 
 ############ spark-default.conf #############
-spark_event_log_dir: hdfs://node1:8020/spark/eventlog/
+spark_history_retainedApplications: 10
+spark_history_ui_port: 18080
+# 非Hadoop HA
+#spark_event_log_dir: hdfs://node1:8020/spark/historylog/
+# Hadoop HA, dfs.nameservices
+spark_event_log_dir: hdfs://datastore/spark/historylog/
+spark_history_log_dir: hdfs://datastore/spark/historylog/
+spark_yarn_historyServer_address: node2:18080
 
 spark_slaves:
  - node3

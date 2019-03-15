@@ -17,7 +17,6 @@
     - "{{yarn_pid_dir}}"
     - "{{yarn_nodemanager_local_dirs}}"
     - "{{yarn_nodemanager_log_dirs}}"
-    - "{{yarn_app_mapreduce_am_staging_dir}}"
     - "{{hadoop_mapred_pid_dir}}"
     - "{{hadoop_mapred_log_dir}}"
 

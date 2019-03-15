@@ -70,6 +70,8 @@
 
 export JAVA_HOME={{JAVA_HOME}}
 export SCALA_HOME={{SCALA_HOME}}
+export HADOOP_HOME={{HADOOP_HOME}}
+export HADOOP_CONF_DIR={{HADOOP_CONFIG_DIR}}
 # ZK HA
 export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url={{zoo_hosts}} -Dspark.deploy.zookeeper.dir=/spark"
 
@@ -81,5 +83,4 @@ export SPARK_PID_DIR={{spark.pid_dir}}
 export SPARK_LOG_DIR={{spark.log_dir}}
 # Where the pid file is stored. (Default: /tmp)
 export SPARK_PID_DIR={{spark.pid_dir}} 
-
 

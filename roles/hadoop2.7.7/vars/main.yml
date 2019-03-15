@@ -68,7 +68,7 @@ yarn_nodemanager_log_retain_second: 604800
 # 历史日志访问
 yarn_log_server_url: http://node2:19888/jobhistory/logs
 # 是否开启日志聚合功能
-yarn_log_aggregation_enable: true
+yarn_log_aggregation_enable: "true"
 # 收集的日志的保留时间，以秒为单位，到时后被删除，保留30天后删除
 yarn_log_aggregation_retain_seconds: 2592000
 # log server的地址 http://hostname:19888/jobhistory/logs
@@ -78,11 +78,12 @@ yarn_nodemanager_remote_app_log_dir: /app-log
 # 集合日志后的存放地址由 ${remote-app-log-dir}/${user}/{thisParam}构成
 yarn_nodemanager_remote_app_log_dir_suffix: logs
 #  application执行结束后延迟10min删除本地文件及日志
-yarn_nodemanager_delete_debug_delay_sec: 600
+yarn_nodemanager_delete_debug_delay_sec: 86400
 
 ########## mapred-site.xml #################
 # default /tmp/hadoop-yarn/staging
-yarn_app_mapreduce_am_staging_dir: /data/hadoop/hadoop-yarn/staging
+# 存在hdfs目录
+yarn_app_mapreduce_am_staging_dir: /mapjob/hadoop_yarn/staging
 # default ${yarn.app.mapreduce.am.staging-dir}/history/done
 # 存在hdfs目录
 mapreduce_jobhistory_done_dir: /mapjob/history/done
