@@ -6,9 +6,11 @@ spark:
  env_file: /home/hadoop/.bash_profile
  pid_dir: /home/hadoop/spark/pid
  log_dir: /data/spark/log
+ work_dir: /data/spark/work
  history_log: /spark/historylog
  event_log: /spark/eventlog
  yarn_archive: /tmp/spark-archive
+
 
 zoo_hosts: node2:2181,node3:2181,node4:2181
 JAVA_HOME: /opt/jdk

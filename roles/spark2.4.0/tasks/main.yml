@@ -10,6 +10,7 @@
   with_items:
     - "{{spark.pid_dir}}"
     - "{{spark.log_dir}}"
+    - "{{spark.work_dir}}"
 
 - name: copy {{spark.filename}} to remote host {{spark.remote_dir}}
   copy: src={{spark.filename}} dest={{spark.remote_dir}}
