@@ -79,6 +79,26 @@ yarn_nodemanager_remote_app_log_dir: /app-log
 yarn_nodemanager_remote_app_log_dir_suffix: logs
 #  application执行结束后延迟10min删除本地文件及日志
 yarn_nodemanager_delete_debug_delay_sec: 86400
+# 节点上YARN可使用的物理内存总量，默认是8192（MB）
+yarn_nodemanager_resource_memory_mb: 60000
+# NodeManager总的可用虚拟CPU个数，默认是8
+yarn_nodemanager_resource_cpu_vcores: 8
+# 单个任务可申请的最少物理内存量，默认是1024（MB）
+yarn_scheduler_minimum_allocation_mb: 2048
+# 单个任务可申请的最多物理内存量，默认是8192（MB）
+yarn_scheduler_maximum_allocation_mb: 20480
+# 单个任务可申请的最小虚拟CPU个数，默认是1
+yarn_scheduler_minimum_allocation_vcores: 2
+# 单个任务可申请的最大虚拟CPU个数，默认是4
+yarn_scheduler_maximum_allocation_vcores: 20
+# 是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认是true
+yarn_nodemanager_pmem_check_enabled: true
+# 是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认是true
+yarn_nodemanager_vmem_check_enabled: true
+# 处理来自NodeManager的RPC请求的Handler数目，默认是50
+yarn_resourcemanager_resource_tracker_client_thread_count: 100
+# 处理来自ApplicationMaster的RPC请求的Handler数目，默认是50
+yarn_resourcemanager_scheduler_client_thread_count: 100
 
 ########## mapred-site.xml #################
 # default /tmp/hadoop-yarn/staging

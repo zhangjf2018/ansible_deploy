@@ -7,4 +7,6 @@ Hadoop NameNode Cluster HA: ALIVE(NM)/STANDBY(NM) 节点要能免密登录到DN�
 yarn_log_server_url 修改主机地址，配置历史日志
 
 Spark StandAlone Cluster HA : 多个master 要能免密登录到work(slave)
+# 配置参数
+#  spark/jars 上传至 hdfs /tmp/spark-archive
 

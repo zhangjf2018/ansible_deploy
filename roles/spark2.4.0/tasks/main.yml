@@ -42,6 +42,14 @@
   shell: "{{HADOOP_HOME}}/bin/hdfs dfs -mkdir -p {{spark.event_log}}"
   when: spark_active == "true"
 
+- name: create hdfs yarn archive dir {{spark.yarn_archive}}
+  shell: "{{HADOOP_HOME}}/bin/hdfs dfs -mkdir -p {{spark.yarn_archive}}"
+  when: spark_active == "true"
+
+- name: upload jars to hdfs {{spark.yarn_archive}}
+  shell: "{{HADOOP_HOME}}/bin/hdfs dfs -put {{SPARK_HOME}}/jars/* {{spark.yarn_archive}}"
+  when: spark_active == "true"
+
 - name: Write spark-env.sh file
   template: src=spark-env.sh.j2 dest={{spark.install_dir}}/conf/spark-env.sh
 

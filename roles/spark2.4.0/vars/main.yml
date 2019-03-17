@@ -8,12 +8,15 @@ spark:
  log_dir: /data/spark/log
  history_log: /spark/historylog
  event_log: /spark/eventlog
+ yarn_archive: /tmp/spark-archive
 
 zoo_hosts: node2:2181,node3:2181,node4:2181
 JAVA_HOME: /opt/jdk
 SCALA_HOME: /opt/scala
 HADOOP_HOME: /home/hadoop/hadoop
 HADOOP_CONFIG_DIR: /home/hadoop/hadoop/etc/hadoop
+YARN_CONF_DIR: /home/hadoop/hadoop/etc/hadoop
+SPARK_HOME: /home/hadoop/spark
 
 ############ spark-env.sh ###################
 # Hadoop 非HA配置
@@ -31,6 +34,8 @@ spark_history_ui_port: 18080
 spark_event_log_dir: hdfs://datastore/spark/historylog/
 spark_history_log_dir: hdfs://datastore/spark/historylog/
 spark_yarn_historyServer_address: node2:18080
+
+spark_yarn_jars: hdfs://datastore/tmp/spark-archive/*.jar
 
 spark_slaves:
  - node3

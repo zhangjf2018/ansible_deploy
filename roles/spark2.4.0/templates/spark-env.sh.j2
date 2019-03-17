@@ -72,6 +72,9 @@ export JAVA_HOME={{JAVA_HOME}}
 export SCALA_HOME={{SCALA_HOME}}
 export HADOOP_HOME={{HADOOP_HOME}}
 export HADOOP_CONF_DIR={{HADOOP_CONFIG_DIR}}
+export YARN_CONF_DIR={{YARN_CONF_DIR}}
+export SPARK_HOME={{SPARK_HOME}}
+
 # ZK HA
 export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url={{zoo_hosts}} -Dspark.deploy.zookeeper.dir=/spark"
 
