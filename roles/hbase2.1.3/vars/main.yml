@@ -1,0 +1,27 @@
+---
+hbase:
+ filename: hbase-2.1.3-bin.tar.gz
+ remote_dir: /tmp/
+ install_dir: /home/hadoop/hbase
+ env_file: /home/hadoop/.bash_profile
+ pid_dir: /home/hadoop/hbase/pid/
+ log_dir: /data/hbase/log
+ class_path: /home/hadoop/hadoop/etc/hadoop
+ tmp_dir: /data/hbase/hbase
+
+# true HBASE 自带zookeeper
+# false HBASE 使用外部zookeeper
+HBASE_MANAGES_ZK: false
+HADOOP_CONF_DIR: /home/hadoop/hadoop/etc/hadoop
+JAVA_HOME: /opt/jdk
+# RegionServer能够处理的IO请求线程数,默认30
+hbase_regionserver_handler_count: 100
+
+regionservers:
+ - node1
+ - node2
+ - node3
+ - node4
+
+backupmasters:
+ - node2

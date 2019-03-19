@@ -1,0 +1,5 @@
+---
+- hosts: hbase
+  #remote_user: root
+  roles:  
+   - hbase2.1.3
