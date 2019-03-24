@@ -1,0 +1,21 @@
+---
+mysql:
+ filename: mysql-5.7.23-linux-glibc2.12-x86_64.tar.gz
+ remote_dir: /tmp/
+ install_dir: /opt/mysql
+ env_file: /etc/profile
+ pid_dir: /opt/mysql/mysqld.pid
+ socket_dir: /opt/mysql/mysqld.sock
+ log_dir: /data/mysql/log
+ data_dir: /data/mysql/data
+ bin_log: /data/mysql/mysql-bin
+
+# mysql 授权目录
+MYSQL_CHOWN: /data/mysql
+
+slow_query_log_file: /data/mysql/log
+# 单位秒
+long_query_time: 1
+# 记录那些由于查找了多余1000次而引发的慢查询
+min_examined_row_limit: 1000
+

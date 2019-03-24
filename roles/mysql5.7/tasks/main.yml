@@ -1,0 +1,50 @@
+---
+- name: "create remote dir {{mysql.remote_dir}}"
+  file: path={{mysql.remote_dir}} state=directory
+
+- name: "create install dir {{mysql.install_dir}}"
+  file: path={{mysql.install_dir}} state=directory owner=mysql group=mysql
+
+- name: "Create mysql data directory."
+  file: path={{item}} state=directory owner=mysql group=mysql
+  with_items:
+    - "{{MYSQL_CHOWN}}"
+    - "{{mysql.log_dir}}"
+    - "{{mysql.bin_log}}"
+    - "{{mysql.data_dir}}"
+
+- name: copy {{mysql.filename}} to remote host {{mysql.remote_dir}}
+  copy: src={{mysql.filename}} dest={{mysql.remote_dir}}
+
+- name: "unzip install package {{mysql.filename}} to {{mysql.install_dir}}"
+  unarchive: 
+    src: "{{mysql.remote_dir}}/{{mysql.filename}}"
+    dest: "{{mysql.install_dir}}"
+    copy: no
+    group: mysql
+    owner: mysql
+    extra_opts:
+     - --strip-components=1
+
+- name: set mysql env {{mysql.env_file}}
+  tags: env
+  lineinfile: dest={{mysql.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########MySQL ENV########"}
+    - {position: EOF, value: "export MYSQL_HOME={{mysql.install_dir}}"}
+    - {position: EOF, value: "export PATH=$MYSQL_HOME/bin:$PATH"}
+  notify:
+    - enable env
+
+- name: Write my.cnf file
+  template: src=my_master.cnf.j2 dest=/etc/my.cnf
+  when: mysql_master == "true"
+ 
+- name: Write my.cnf slave file
+  template: src=my_slave.cnf.j2 dest=/etc/my.cnf
+  when: mysql_slave == "true"
+
+#- name: create mysql user
+#  shell: "groupadd mysql; useradd -r -g mysql mysql"
+
+

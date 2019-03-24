@@ -1,0 +1,63 @@
+
+[mysqld]
+server_id = 1
+log-bin         = {{mysql.bin_log}}
+pid-file	= {{mysql.pid_dir}}
+socket		= {{mysql.socket_dir}}
+datadir		= {{mysql.data_dir}}
+basedir		= {{mysql.install_dir}}
+log-error	= {{mysql.log_dir}}
+# By default we only accept connections from localhost
+#bind-address	= 127.0.0.1
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+skip-external-locking
+skip-name-resolve
+character-set-server=gbk
+#innodb_buffer_pool_size=128G
+innodb_log_file_size=512M
+max_connections=65535
+innodb_file_per_table=on
+query_cache_size = 128M
+query_cache_limit = 16M
+default_storage_engine = InnoDB
+default_tmp_storage_engine = InnoDB
+tmp_table_size = 128M
+innodb_thread_concurrency = 32
+innodb_lock_wait_timeout = 120
+
+back_log=65535
+wait_timeout=3600
+table_open_cache=20480
+max_allowed_packet = 128M
+binlog_cache_size = 64M
+#max_heap_table_size = 4096M
+read_rnd_buffer_size = 64M
+sort_buffer_size = 64M
+join_buffer_size = 64M
+thread_cache_size = 2048
+
+query_cache_type = 0
+expire_logs_days = 30
+binlog_format=ROW
+
+slow_query_log=on
+slow_query_log_file={{slow_query_log_file}}
+long_query_time={{long_query_time}}
+log_queries_not_using_indexes=on
+min_examined_row_limit={{min_examined_row_limit}}
+
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER
+
+character-set-server=utf8
+explicit_defaults_for_timestamp=true
+[mysqldump]
+quick
+max_allowed_packet = 1024M
+
+[mysqld_safe]
+open-files-limit = 40960 
+
+[client]
+default-character-set=utf8
