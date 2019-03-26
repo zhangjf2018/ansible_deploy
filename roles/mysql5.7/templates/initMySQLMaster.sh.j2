@@ -1,0 +1,8 @@
+
+
+{{mysql.install_dir}}/bin/mysql -uroot -p{{MYSQL_PASSWORD}} -e "\
+create user '{{MYSQL_REPLICATION_USER}}'@'%' identified by '{{MYSQL_REPLICATION_PASSWORD}}'; \
+GRANT REPLICATION SLAVE ON *.* TO '{{MYSQL_REPLICATION_USER}}'@'%' IDENTIFIED BY '{{MYSQL_REPLICATION_PASSWORD}}';\
+flush privileges;\
+"
+

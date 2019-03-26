@@ -1,0 +1,8 @@
+
+
+{{mysql.install_dir}}/bin/mysql -uroot -p{{MYSQL_PASSWORD}} -e "\
+stop slave; \
+CHANGE MASTER TO master_host='{{MYSQL_MASTER_HOST}}', master_user='{{MYSQL_REPLICATION_USER}}', master_password='{{MYSQL_REPLICATION_PASSWORD}}';\
+start slave;\
+"
+

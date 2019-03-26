@@ -8,14 +8,20 @@ mysql:
  socket_dir: /opt/mysql/mysqld.sock
  log_dir: /data/mysql/log
  data_dir: /data/mysql/data
- bin_log: /data/mysql/mysql-bin
+ bin_log_dir: /data/mysql/mysql-bin
 
 # mysql 授权目录
 MYSQL_CHOWN: /data/mysql
 
-slow_query_log_file: /data/mysql/log
+bin_log: /data/mysql/mysql-bin/mysql-bin
+log_err: /data/mysql/log/log.err
+slow_query_log_file: /data/mysql/log/slow_query.log
 # 单位秒
 long_query_time: 1
 # 记录那些由于查找了多余1000次而引发的慢查询
 min_examined_row_limit: 1000
 
+MYSQL_PASSWORD: 123456
+MYSQL_MASTER_HOST: 172.18.201.11
+MYSQL_REPLICATION_USER: backup
+MYSQL_REPLICATION_PASSWORD: 123456

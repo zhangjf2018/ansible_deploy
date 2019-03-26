@@ -10,8 +10,14 @@
   with_items:
     - "{{MYSQL_CHOWN}}"
     - "{{mysql.log_dir}}"
-    - "{{mysql.bin_log}}"
+    - "{{mysql.bin_log_dir}}"
     - "{{mysql.data_dir}}"
+
+- name: "Create mysql data file."
+  file: path={{item}} state=touch owner=mysql group=mysql
+  with_items:
+    - "{{slow_query_log_file}}"
+    - "{{log_err}}"
 
 - name: copy {{mysql.filename}} to remote host {{mysql.remote_dir}}
   copy: src={{mysql.filename}} dest={{mysql.remote_dir}}
@@ -47,4 +53,35 @@
 #- name: create mysql user
 #  shell: "groupadd mysql; useradd -r -g mysql mysql"
 
+- name: init MySQL  
+  shell: "{{mysql.install_dir}}/bin/mysqld --defaults-file=/etc/my.cnf --initialize --user=mysql"
+
+- name: copy mysql.server to /etc/init.d/mysql
+  copy: src={{mysql.install_dir}}/support-files/mysql.server  dest=/etc/init.d/mysql owner=mysql group=mysql remote_src=yes mode=0755
+
+- name: set chkconfig, mysql start on power up
+  shell: chkconfig mysql on
+
+- name: start MySQL
+  service: name=mysql enabled=yes state=restarted
+
+- name: copy initMySQLPassword.sh {{mysql.install_dir}}
+  template: src=initMySQLPassword.sh.j2 dest={{mysql.install_dir}}/initMySQLPassword.sh owner=mysql group=mysql mode=0755
+
+- name: copy initMySQLMaster.sh {{mysql.install_dir}}
+  template: src=initMySQLMaster.sh.j2 dest={{mysql.install_dir}}/initMySQLMaster.sh owner=mysql group=mysql mode=0755
+
+- name: copy initMySQLSlave.sh {{mysql.install_dir}}
+  template: src=initMySQLSlave.sh.j2 dest={{mysql.install_dir}}/initMySQLSlave.sh owner=mysql group=mysql mode=0755
+
+- name: init root passsword
+  shell: "{{mysql.install_dir}}/initMySQLPassword.sh"
+
+- name: init MySQL Master
+  shell: "{{mysql.install_dir}}/initMySQLMaster.sh"
+  when: mysql_master == "true"
+
+- name: init MySQL Slave
+  shell: "{{mysql.install_dir}}/initMySQLSlave.sh"
+  when: mysql_slave == "true"
 
