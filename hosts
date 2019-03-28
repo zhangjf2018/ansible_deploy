@@ -26,3 +26,15 @@ node1 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=true  spark
 node2 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=true  
 node3 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=false 
 node4 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx spark_active=false spark_standby=false 
+
+[hbase]
+node1 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx hbase_active=true  hbase_standby=false 
+node2 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx hbase_active=false hbase_standby=true  
+node3 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx hbase_active=false hbase_standby=false 
+node4 ansible_ssh_user=hadoop ansible_ssh_pass=1qaz2wsx hbase_active=false hbase_standby=false 
+
+[mysql]
+node3 ansible_ssh_user=root mysql_master=true  mysql_slave=false
+node4 ansible_ssh_user=root mysql_master=false mysql_slave=true
+
+
