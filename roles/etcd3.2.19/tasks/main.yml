@@ -21,3 +21,10 @@
     extra_opts:
      - --strip-components=1
 
+- name: Write etcd.service file
+  template: src=etcd.service.j2 dest=/lib/systemd/system/etcd.service
+  notify:
+    - reload systemctl daemon
+    - restart etcd
+
+

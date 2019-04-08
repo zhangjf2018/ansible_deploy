@@ -1,0 +1,8 @@
+---
+- name: reload systemctl daemon
+  command: systemctl daemon-reload
+  when: ansible_service_mgr == 'systemd'
+
+- name: restart etcd
+  service: name=etcd state=restarted
+
