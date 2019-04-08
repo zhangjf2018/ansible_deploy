@@ -1,0 +1,16 @@
+---
+- name: reload systemctl daemon
+  command: systemctl daemon-reload
+  when: ansible_service_mgr == 'systemd'
+
+- name: restart kube-apiserver
+  service: name=kube-apiserver state=restarted
+
+- name: restart kube-controller-manager
+  service: name=kube-controller-manager state=restarted
+
+- name: restart kube-scheduler
+  service: name=kube-scheduler state=restarted
+
+- name: enable env
+  shell: "source {{k8s.env_file}}"

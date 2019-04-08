@@ -1,0 +1,30 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+[Service]
+ExecStart={{k8s.install_dir}}/bin/kube-apiserver \
+  --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota,NodeRestriction \
+  --insecure-bind-address={{NODE_IP}} \
+  --insecure-port={{INSECURE_PORT}} \
+  --bind-address={{NODE_IP}} \
+  --authorization-mode=Node,RBAC \
+  --runtime-config=rbac.authorization.k8s.io/v1beta1 \
+  --token-auth-file={{k8s.etc_dir}}/token.csv \
+  --service-cluster-ip-range={{SERVICE_CLUSTER_IP_RANGE}} \
+  --service-node-port-range={{SERVICE_NODE_PORT_RANGE}} \
+  --etcd-servers={{ETCD_NODES}} \
+  --enable-swagger-ui=true \
+  --allow-privileged=true \
+  --audit-log-maxage=30 \
+  --audit-log-maxbackup=3 \
+  --audit-log-maxsize=100 \
+  --audit-log-path=/var/lib/audit.log \
+  --event-ttl=1h \
+  --v=2
+Restart=on-failure
+RestartSec=5
+Type=notify
+LimitNOFILE=65536
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+---
+- name: reload systemctl daemon
+  command: systemctl daemon-reload
+  when: ansible_service_mgr == 'systemd'
+
+- name: restart calico
+  service: name=kube-calico state=restarted
+
+- name: enable env
+  shell: "source {{calico.env_file}}"

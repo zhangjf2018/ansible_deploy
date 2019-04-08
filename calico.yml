@@ -1,0 +1,5 @@
+---
+- hosts: calico
+  #remote_user: root
+  roles:  
+   - calico2.6.9

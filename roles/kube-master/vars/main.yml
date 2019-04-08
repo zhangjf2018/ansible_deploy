@@ -1,0 +1,16 @@
+---
+k8s:
+ bin_dir: /root/soft/kubernetes/server/bin
+ install_dir: /opt/kubernetes
+ env_file: /etc/profile
+ etc_dir: /etc/kubernetes
+
+# apiserver http port
+INSECURE_PORT: 5888
+# scheduler controller-manager 中的master url 配置
+API_SERVER_HOST: http://127.0.0.1:5888
+
+SERVICE_CLUSTER_IP_RANGE: 10.68.0.0/16
+SERVICE_NODE_PORT_RANGE: 20000-40000
+ETCD_NODES: "http://172.18.201.10:2379,http://172.18.201.11:2379,http://172.18.201.12:2379"
+CLUSTER_CIDR: 172.20.0.0/16

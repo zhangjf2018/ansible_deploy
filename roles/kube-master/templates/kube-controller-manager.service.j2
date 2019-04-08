@@ -1,0 +1,17 @@
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+[Service]
+ExecStart={{k8s.install_dir}}/bin/kube-controller-manager \
+  --address=127.0.0.1 \
+  --master={{API_SERVER_HOST}} \
+  --allocate-node-cidrs=true \
+  --service-cluster-ip-range={{SERVICE_CLUSTER_IP_RANGE}} \
+  --cluster-cidr={{CLUSTER_CIDR}} \
+  --cluster-name=kubernetes \
+  --leader-elect=true \
+  --v=2
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

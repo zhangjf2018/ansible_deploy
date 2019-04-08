@@ -1,0 +1,38 @@
+---
+- name: "create remote dir {{calico.remote_dir}}"
+  file: path={{calico.remote_dir}} state=directory
+
+- name: "create install dir {{calico.install_dir}}"
+  file: path={{calico.install_dir}} state=directory
+
+- name: "create calico data directory."
+  file: path={{item}} state=directory
+  with_items:
+    - "{{calico.log_dir}}"
+
+- name: copy {{calico.filename}} to remote host {{calico.remote_dir}}
+  copy: src={{calico.filename}} dest={{calico.remote_dir}}
+
+- name: "unzip install package {{calico.filename}} to {{calico.install_dir}}"
+  unarchive: 
+    src: "{{calico.remote_dir}}/{{calico.filename}}"
+    dest: "{{calico.install_dir}}"
+    copy: no
+    extra_opts:
+     - --strip-components=1
+
+- name: set calico env {{calico.env_file}}
+  tags: env
+  lineinfile: dest={{calico.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########CALICO ENV########"}
+    - {position: EOF, value: "export CALICO_HOME={{calico.install_dir}}"}
+    - {position: EOF, value: "export PATH=$CALICO_HOME/bin:$PATH"}
+  notify:
+    - enable env
+
+- name: Write kube-calico.service file
+  template: src=kube-calico.service.j2 dest=/lib/systemd/system/kube-calico.service
+  notify:
+    - reload systemctl daemon
+    - restart calico
