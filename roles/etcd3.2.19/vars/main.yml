@@ -1,0 +1,9 @@
+---
+etcd:
+ filename: etcd-v3.2.19-linux-amd64.tar.gz
+ remote_dir: /tmp/
+ install_dir: /opt/etcd
+ env_file: /etc/bash_profile
+ work_dir: /data/etcd
+
+ETCD_NODES: "etcd1=http://172.18.201.10:2380,etcd2=http://172.18.201.11:2380,etcd3=http://172.18.201.12:2380"

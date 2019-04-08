@@ -1,0 +1,26 @@
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/coreos
+
+[Service]
+Type=notify
+WorkingDirectory={{work_dir}}
+ExecStart={{etcd.install_dir}}/etcd \
+  --name={{NODE_NAME}} \
+  --listen-client-urls=http://{{NODE_IP}}:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls=http://{{NODE_IP}}:2379 \
+  --data-dir={{work_dir}} \
+  --listen-peer-urls=http://{{NODE_IP}}:2380 \
+  --initial-advertise-peer-urls=http://{{NODE_IP}}:2380 \
+  --initial-cluster-token=etcd-cluster-token \
+  --initial-cluster={{ETCD_NODES}} \
+  --initial-cluster-state=new \
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
