@@ -9,6 +9,7 @@
   file: path={{item}} state=directory
   with_items:
     - "{{calico.log_dir}}"
+    - "{{calico.conf_dir}}"
 
 - name: copy {{calico.filename}} to remote host {{calico.remote_dir}}
   copy: src={{calico.filename}} dest={{calico.remote_dir}}
@@ -36,3 +37,6 @@
   notify:
     - reload systemctl daemon
     - restart calico
+
+- name: Write calicoctl.cfg.j2 file
+  template: src=calicoctl.cfg.j2 dest={{calico.conf_dir}}/calicoctl.cfg

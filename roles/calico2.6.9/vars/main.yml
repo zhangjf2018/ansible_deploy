@@ -5,6 +5,7 @@ calico:
  install_dir: /opt/calico
  env_file: /etc/profile
  log_dir: /data/calico/log
+ conf_dir: /etc/calico
 
 ETCD_NODES: "http://172.18.201.10:2379,http://172.18.201.11:2379,http://172.18.201.12:2379"
 ipv4_cidr: 172.20.0.0/16
