@@ -10,3 +10,6 @@ Spark StandAlone Cluster HA : 多个master 要能免密登录到work(slave)
 # 配置参数
 #  spark/jars 上传至 hdfs /tmp/spark-archive
 
+
+## kubernets部署
+1. [CA配置](docs/kubernetes/CA配置.md)

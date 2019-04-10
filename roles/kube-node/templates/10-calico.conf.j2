@@ -1,0 +1,16 @@
+{
+    "name": "calico-k8s-network",
+    "cniVersion": "0.1.0",
+    "type": "calico",
+    "etcd_endpoints": "{{ETCD_NDOES}}",
+    "etcd_key_file": "{{CALICO_KEY_PEM}}",
+    "etcd_cert_file": "{{CALICO_PEM}}",
+    "etcd_ca_cert_file": "{{CA_PEM}}",
+    "log_level": "info",
+    "ipam": {
+        "type": "calico-ipam"
+    },
+    "kubernetes": {
+        "kubeconfig": "{{k8s.etc_dir}}/kubelet.kubeconfig"
+    }
+}

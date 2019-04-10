@@ -1,0 +1,88 @@
+---
+- name: "create k8s install dir {{k8s.install_dir}}"
+  file: path={{k8s.install_dir}} state=directory
+
+- name: "create cni install dir {{cni.install_dir}}"
+  file: path={{cni.install_dir}} state=directory
+
+- name: "create k8s data directory."
+  file: path={{item}} state=directory
+  with_items:
+    - "{{k8s.etc_dir}}"
+    - "{{k8s.install_dir}}/bin"
+    - "{{k8s.kubelet_work_dir}}"
+    - "{{k8s.kube_proxy_work_dir}}"
+    - "{{k8s.kube_proxy_log_dir}}"
+    - "{{k8s.kubelet_log_dir}}"
+    - "{{cni.etc_dir}}"
+    - "{{cni.install_dir}}/bin"
+
+- name: copy files to remote host {{cni.install_dir}}
+  copy: src={{cni.bin_dir}}/{{item}} dest={{cni.install_dir}}/bin/{{item}} mode=0755
+  with_items:
+  - calico
+  - calico-ipam
+  - cnitool
+  - loopback
+  - noop
+
+- name: copy files to remote host {{cni.install_dir}}
+  copy: src={{k8s.bin_dir}}/{{item}} dest={{k8s.install_dir}}/bin/{{item}} mode=0755
+  with_items:
+  - kubectl
+  - kubelet
+  - kube-proxy
+
+- name: Write 10-calico.conf file
+  template: src=10-calico.conf.j2 dest={{cni.etc_dir}}/10-calico.conf
+
+- name: create kubelet.kubeconfig
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
+        --server={{KUBE_APISERVER}} \
+        --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+
+- name: set kubelet.kubeconfig token
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials kubelet \
+        --token={{TOKEN}} \
+        --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+
+- name: set kubelet.kubeconfig context
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-context default \
+    --cluster=kubernetes \
+    --user=kubelet \
+    --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+
+- name: select default use context
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+
+- name: Write kubelet.service file
+  template: src=kubelet.service.j2 dest=/lib/systemd/system/kubelet.service
+  notify:
+    - reload systemctl daemon
+    - restart kubelet
+
+- name: create kube-proxy.kubeconfig
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
+        --server={{KUBE_APISERVER}} \
+        --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+
+- name: set kube-proxy.kubeconfig token
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials kube-proxy \
+        --token={{TOKEN}} \
+        --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+
+- name: set kube-proxy.kubeconfig context
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-context default \
+    --cluster=kubernetes \
+    --user=kube-proxy \
+    --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+
+- name: select default use context
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+
+- name: Write kube-proxy.service file
+  template: src=kube-proxy.service.j2 dest=/lib/systemd/system/kube-proxy.service
+  notify:
+    - reload systemctl daemon
+    - restart kube-proxy
+

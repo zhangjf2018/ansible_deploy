@@ -1,0 +1,32 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory={{k8s.kubelet_work_dir}}
+ExecStart={{k8s.install_dir}}/bin/kubelet \
+  --address={{NODE_IP}} \
+  --hostname-override={{NODE_IP}} \
+  --pod-infra-container-image={{PAUSE_IAMGE}} \
+  --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig \
+  --hairpin-mode hairpin-veth \
+  --network-plugin=cni \
+  --cni-conf-dir={{cni.etc_dir}} \
+  --cni-bin-dir={{cni.install_dir}}/bin \
+  --cluster-dns={{CLUSTER_DNS}} \
+  --cluster-domain={{CLUSTER_DOMAIN}} \
+  --allow-privileged=true \
+  --cgroup-driver=systemd \
+  --experimental-fail-swap-on=false \
+  --logtostderr=true \
+  --root-dir={{k8s.kubelet_work_dir}} \
+  --log-dir={{k8s.kubelet_log_dir}} \
+  --v=2
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,7 @@
   file: path={{item}} state=directory
   with_items:
     - "{{k8s.etc_dir}}"
+    - "{{k8s.log_dir}}"
     - "{{k8s.install_dir}}/bin"
 
 - name: copy files to remote host {{k8s.install_dir}}
