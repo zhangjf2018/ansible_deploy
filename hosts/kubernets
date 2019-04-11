@@ -16,3 +16,7 @@
 
 [kube-node]
 172.18.201.12 NODE_IP="172.18.201.12"
+
+[kube-cluster:children]
+kube-master
+kube-node

@@ -1,0 +1,5 @@
+---
+- hosts: kube-cluster
+  #remote_user: root
+  roles:  
+   - kube-ca

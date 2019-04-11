@@ -1,0 +1,9 @@
+---
+ca:
+ install_dir: /etc/kubernetes/ca
+
+cfssl:
+ bin_dir: /root/soft/cfssl #二进制文件位置
+ install_dir: /opt/cfssl
+
+

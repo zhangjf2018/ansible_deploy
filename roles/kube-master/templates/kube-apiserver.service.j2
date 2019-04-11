@@ -8,12 +8,17 @@ ExecStart={{k8s.install_dir}}/bin/kube-apiserver \
   --insecure-bind-address={{NODE_IP}} \
   --insecure-port={{INSECURE_PORT}} \
   --bind-address={{NODE_IP}} \
+  --kubelet-https=true \
   --enable-bootstrap-token-auth \
   --authorization-mode=Node,RBAC \
   --runtime-config=rbac.authorization.k8s.io/v1beta1 \
   --token-auth-file={{k8s.etc_dir}}/token.csv \
   --service-cluster-ip-range={{SERVICE_CLUSTER_IP_RANGE}} \
   --service-node-port-range={{SERVICE_NODE_PORT_RANGE}} \
+  --tls-cert-file={{CA_DIR}}/kubernetes/kubernetes.pem \
+  --tls-private-key-file={{CA_DIR}}/kubernetes/kubernetes-key.pem \
+  --client-ca-file={{CA_DIR}}/ca.pem \
+  --service-account-key-file={{CA_DIR}}/ca-key.pem \
   --etcd-servers={{ETCD_NODES}} \
   --enable-swagger-ui=true \
   --allow-privileged=true \

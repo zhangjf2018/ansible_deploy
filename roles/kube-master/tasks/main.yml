@@ -7,7 +7,10 @@
   with_items:
     - "{{k8s.etc_dir}}"
     - "{{k8s.log_dir}}"
+    - "{{k8s.kcm_log_dir}}"
+    - "{{k8s.ks_log_dir}}"
     - "{{k8s.install_dir}}/bin"
+    - "{{CA_DIR}}/kubernetes"
 
 - name: copy files to remote host {{k8s.install_dir}}
   copy: src={{k8s.bin_dir}}/{{item}} dest={{k8s.install_dir}}/bin/{{item}} mode=0755
@@ -19,6 +22,16 @@
 
 - name: Write token.csv file
   template: src=token.csv.j2 dest={{k8s.etc_dir}}/token.csv
+
+- name: Write kubernetes-csr.json file
+  template: src=kubernetes-csr.json.j2 dest={{CA_DIR}}/kubernetes/kubernetes-csr.json
+
+- name: 创建kubernetes证书和私钥
+  shell: "cd {{ CA_DIR }}/kubernetes && {{ CFSSL_INSTALL_DIR }}/bin/cfssl gencert \
+        -ca={{ CA_DIR }}/ca.pem \
+        -ca-key={{ CA_DIR }}/ca-key.pem \
+        -config={{ CA_DIR }}/ca-config.json \
+        -profile=kubernetes kubernetes-csr.json | {{ CFSSL_INSTALL_DIR }}/bin/cfssljson -bare kubernetes"
 
 - name: Write kube-apiserver.service file
   template: src=kube-apiserver.service.j2 dest=/lib/systemd/system/kube-apiserver.service

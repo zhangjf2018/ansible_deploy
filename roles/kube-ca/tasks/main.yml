@@ -1,0 +1,25 @@
+
+## 执行前需确定CA证书已经生成
+
+- name: create ca dirs
+  file: name={{ item }} state=directory
+  with_items:
+  - "{{cfssl.install_dir}}/bin"
+  - "{{ca.install_dir}}"
+
+- name: install CFSSL
+  copy: src={{cfssl.bin_dir}}/{{ item }} dest={{cfssl.install_dir}}/bin/{{ item }} mode=0755
+  with_items:
+  - cfssl
+  - cfssl-certinfo
+  - cfssljson
+
+- name: 分发CA证书
+  copy: src={{item}} dest={{ ca.install_dir }}/{{ item }} mode=0644
+  with_items:
+  - ca.pem
+  - ca-key.pem
+  - ca.csr
+  - ca-config.json
+
+
