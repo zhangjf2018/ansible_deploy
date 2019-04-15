@@ -18,12 +18,19 @@ cni:
 KUBE_APISERVER: http://172.18.201.9:6888
 CLUSTER_DNS: 10.68.0.2
 CLUSTER_DOMAIN: cluster.local.
+CA_DIR: /etc/kubernetes/ca
+
 PAUSE_IAMGE: registry:5000/pause-amd64:3.0
 ETCD_NDOES: "http://172.18.201.10:2379,http://172.18.201.11:2379,http://172.18.201.12:2379"
-TOKEN: 8afdf3c4eb7c74018452423c29433609
+# kubelet使用引导token的方式认证，所以认证方式跟之前的组件不同，它的证书不是手动生成，而是由工作节点TLS BootStrap 向api-server请求，由主节点的controller-manager 自动签发
+BOOTSTRAP_TOKEN: b8bd2f66365968ee7b25f7f01c3119d0
 # etcd_key_file
 CALICO_KEY_PEM:
 # etcd_cert_file
 CALICO_PEM:
 # etcd_ca_cert_file
 CA_PEM:
+CFSSL_INSTALL_DIR: /opt/cfssl
+
+
+

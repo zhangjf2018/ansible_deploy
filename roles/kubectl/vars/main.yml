@@ -1,0 +1,11 @@
+---
+kubectl:
+ bin_dir: /root/soft/kubernetes/server/bin
+ install_dir: /opt/kubernetes
+ env_file: /etc/profile
+
+CA_DIR: /etc/kubernetes/ca
+CFSSL_INSTALL_DIR: /opt/cfssl
+
+KUBE_APISERVER: https://172.18.201.9:7443
+#API_SERVER_HOST: http://172.18.201.9:6888

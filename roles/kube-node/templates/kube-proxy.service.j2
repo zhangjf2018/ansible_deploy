@@ -1,15 +1,15 @@
 [Unit]
 Description=Kubernetes Kube-Proxy Server
-Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Documentation=https://github.com/zhangjf2018/ansible_deploy
 After=network.target
 [Service]
-WorkingDirectory={{k8s.kube_proxy_work_dir}}
-ExecStart={{k8s.install_dir}}/bin/kube-proxy \
-  --bind-address={{NODE_IP}} \
-  --hostname-override={{NODE_IP}} \
-  --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig \
-  --logtostderr=true \
-  --log-dir={{k8s.kube_proxy_log_dir}} \
+WorkingDirectory={{ k8s.kube_proxy_work_dir }}
+ExecStart={{ k8s.install_dir }}/bin/kube-proxy \
+  --bind-address={{ NODE_IP }} \
+  --hostname-override={{ NODE_IP }} \
+  --kubeconfig={{ k8s.etc_dir }}/kube-proxy.kubeconfig \
+  --logtostderr=false \
+  --log-dir={{ k8s.kube_proxy_log_dir }} \
   --v=2
 Restart=on-failure
 RestartSec=5

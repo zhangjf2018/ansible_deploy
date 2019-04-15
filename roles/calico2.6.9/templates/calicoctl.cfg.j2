@@ -1,8 +1,8 @@
-apiVersion: projectcalico.org/v3
-kind: CalicoAPIConfig
+apiVersion: v1
+kind: calicoApiConfig
 metadata:
 spec:
- etcdEndpoints: {{ETCD_NODES}}
+ etcdEndpoints: {{ ETCD_ENDPOINTS }}
 
 
 

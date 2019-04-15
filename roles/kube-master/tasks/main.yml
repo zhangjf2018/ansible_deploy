@@ -7,10 +7,10 @@
   with_items:
     - "{{k8s.etc_dir}}"
     - "{{k8s.log_dir}}"
-    - "{{k8s.kcm_log_dir}}"
-    - "{{k8s.ks_log_dir}}"
     - "{{k8s.install_dir}}/bin"
     - "{{CA_DIR}}/kubernetes"
+    - "{{CA_DIR}}/kube-controller-manager"
+    - "{{CA_DIR}}/kube-scheduler"
 
 - name: copy files to remote host {{k8s.install_dir}}
   copy: src={{k8s.bin_dir}}/{{item}} dest={{k8s.install_dir}}/bin/{{item}} mode=0755
@@ -39,11 +39,77 @@
     - reload systemctl daemon
     - restart kube-apiserver
 
+- name: Write kube-controller-manager-csr.json file
+  template: src=kube-controller-manager-csr.json.j2 dest={{CA_DIR}}/kube-controller-manager/kube-controller-manager-csr.json
+
+- name: 创建kube-controller-manager证书与私钥
+  shell: "cd {{ CA_DIR }}/kube-controller-manager && {{ CFSSL_INSTALL_DIR }}/bin/cfssl gencert \
+        -ca={{ CA_DIR }}/ca.pem \
+        -ca-key={{ CA_DIR }}/ca-key.pem \
+        -config={{ CA_DIR }}/ca-config.json \
+        -profile=kubernetes kube-controller-manager-csr.json | {{ CFSSL_INSTALL_DIR }}/bin/cfssljson -bare kube-controller-manager"
+
+- name: create kube-controller-manager.kubeconfig
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
+        --certificate-authority={{CA_DIR}}/ca.pem \
+        --embed-certs=false \
+        --server={{ KUBE_APISERVER }} \
+        --kubeconfig={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.kubeconfig"
+
+- name: set kube-controller-manager.kubeconfig credentials
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials system:kube-controller-manager \
+        --client-certificate={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.pem \
+        --client-key={{ CA_DIR }}/kube-controller-manager/kube-controller-manager-key.pem \
+        --embed-certs=false \
+        --kubeconfig={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.kubeconfig"
+
+- name: set kube-controller-manager context
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-context system:kube-controller-manager \
+    --cluster=kubernetes \
+    --user=system:kube-controller-manager \
+    --kubeconfig={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.kubeconfig"
+
+- name: select default use context
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context system:kube-controller-manager --kubeconfig={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.kubeconfig"
+
 - name: Write kube-controller-manager.service file
   template: src=kube-controller-manager.service.j2 dest=/lib/systemd/system/kube-controller-manager.service
   notify:
     - reload systemctl daemon
     - restart kube-controller-manager
+
+- name: Write kube-scheduler.json file
+  template: src=kube-scheduler-csr.json.j2 dest={{CA_DIR}}/kube-scheduler/kube-scheduler-csr.json
+
+- name: 创建kube-scheduler证书与私钥
+  shell: "cd {{ CA_DIR }}/kube-scheduler && {{ CFSSL_INSTALL_DIR }}/bin/cfssl gencert \
+        -ca={{ CA_DIR }}/ca.pem \
+        -ca-key={{ CA_DIR }}/ca-key.pem \
+        -config={{ CA_DIR }}/ca-config.json \
+        -profile=kubernetes kube-scheduler-csr.json | {{ CFSSL_INSTALL_DIR }}/bin/cfssljson -bare kube-scheduler"
+
+- name: create kube-scheduler.kubeconfig
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
+        --certificate-authority={{CA_DIR}}/ca.pem \
+        --embed-certs=false \
+        --server={{ KUBE_APISERVER }} \
+        --kubeconfig={{ CA_DIR }}/kube-scheduler/kube-scheduler.kubeconfig"
+
+- name: set kube-scheduler.kubeconfig credentials
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials system:kube-scheduler \
+        --client-certificate={{ CA_DIR }}/kube-scheduler/kube-scheduler.pem \
+        --client-key={{ CA_DIR }}/kube-scheduler/kube-scheduler-key.pem \
+        --embed-certs=false \
+        --kubeconfig={{ CA_DIR }}/kube-scheduler/kube-scheduler.kubeconfig"
+
+- name: set kube-scheduler context
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-context system:kube-scheduler \
+    --cluster=kubernetes \
+    --user=system:kube-scheduler \
+    --kubeconfig={{ CA_DIR }}/kube-scheduler/kube-scheduler.kubeconfig"
+
+- name: select default use context
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context system:kube-scheduler --kubeconfig={{ CA_DIR }}/kube-scheduler/kube-scheduler.kubeconfig"
 
 - name: Write kube-scheduler.service file
   template: src=kube-scheduler.service.j2 dest=/lib/systemd/system/kube-scheduler.service
@@ -60,4 +126,15 @@
     - {position: EOF, value: "export PATH=$KUBERNETES_HOME/bin:$PATH"}
   notify:
     - enable env
+
+# kubelet 自动生成tls证书
+# kubelet 启动时向 kube-apiserver 发送 TLS bootstrapping 请求，需要绑定该角色
+# 只需单节点执行一次，重复执行的报错可以忽略
+# 增加15s等待kube-apiserver正常工作
+#- name: kubelet-bootstrap-setting
+#  shell: "sleep 5 && {{ k8s.isntall_dir }}/bin/kubectl create \
+#          clusterrolebinding kubelet-bootstrap \
+#          --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap"
+#  when: NODE_ID is defined and NODE_ID == "node1"
+#  ignore_errors: true
 

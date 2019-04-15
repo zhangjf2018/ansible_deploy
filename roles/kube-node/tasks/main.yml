@@ -8,7 +8,9 @@
 - name: "create k8s data directory."
   file: path={{item}} state=directory
   with_items:
-    - "{{k8s.etc_dir}}"
+    - "{{ k8s.etc_dir }}"
+    - "{{ k8s.etc_dir }}/kube-proxy"
+    - "{{ k8s.etc_dir }}/kubelet"
     - "{{k8s.install_dir}}/bin"
     - "{{k8s.kubelet_work_dir}}"
     - "{{k8s.kube_proxy_work_dir}}"
@@ -26,7 +28,7 @@
   - loopback
   - noop
 
-- name: copy files to remote host {{cni.install_dir}}
+- name: copy files to remote host {{k8s.install_dir}}
   copy: src={{k8s.bin_dir}}/{{item}} dest={{k8s.install_dir}}/bin/{{item}} mode=0755
   with_items:
   - kubectl
@@ -36,24 +38,26 @@
 - name: Write 10-calico.conf file
   template: src=10-calico.conf.j2 dest={{cni.etc_dir}}/10-calico.conf
 
-- name: create kubelet.kubeconfig
+- name: create bootstrap.kubeconfig
   shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
+        --certificate-authority={{ CA_DIR }}/ca.pem \
+        --embed-certs=false \
         --server={{KUBE_APISERVER}} \
-        --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+        --kubeconfig={{ k8s.etc_dir }}/bootstrap.kubeconfig"
 
-- name: set kubelet.kubeconfig token
-  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials kubelet \
-        --token={{TOKEN}} \
-        --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+- name: set bootstrap.kubeconfig token
+  shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials kubelet-bootstrap \
+        --token={{ BOOTSTRAP_TOKEN }} \
+        --kubeconfig={{ k8s.etc_dir }}/bootstrap.kubeconfig"
 
-- name: set kubelet.kubeconfig context
+- name: set bootstrap.kubeconfig context
   shell: "{{k8s.install_dir}}/bin/kubectl config set-context default \
     --cluster=kubernetes \
-    --user=kubelet \
-    --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+    --user=kubelet-bootstrap \
+    --kubeconfig={{ k8s.etc_dir }}/bootstrap.kubeconfig"
 
 - name: select default use context
-  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{k8s.etc_dir}}/kubelet.kubeconfig"
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{ k8s.etc_dir }}/bootstrap.kubeconfig"
 
 - name: Write kubelet.service file
   template: src=kubelet.service.j2 dest=/lib/systemd/system/kubelet.service
@@ -61,24 +65,38 @@
     - reload systemctl daemon
     - restart kubelet
 
+- name: 准备kube-proxy证书签名请求
+  template: src=kube-proxy-csr.json.j2 dest={{ k8s.etc_dir }}/kube-proxy/kube-proxy-csr.json
+
+- name: 创建kube-proxy证书与私钥
+  shell: "cd {{ k8s.etc_dir }}/kube-proxy && {{ CFSSL_INSTALL_DIR }}/bin/cfssl gencert \
+        -ca={{ CA_DIR }}/ca.pem \
+        -ca-key={{ CA_DIR }}/ca-key.pem \
+        -config={{ CA_DIR }}/ca-config.json \
+        -profile=kubernetes kube-proxy-csr.json | {{ CFSSL_INSTALL_DIR }}/bin/cfssljson -bare kube-proxy"
+
 - name: create kube-proxy.kubeconfig
   shell: "{{k8s.install_dir}}/bin/kubectl config set-cluster kubernetes \
-        --server={{KUBE_APISERVER}} \
-        --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+        --certificate-authority={{CA_DIR}}/ca.pem \
+        --embed-certs=false \
+        --server={{ KUBE_APISERVER }} \
+        --kubeconfig={{ k8s.etc_dir }}/kube-proxy.kubeconfig"
 
 - name: set kube-proxy.kubeconfig token
   shell: "{{k8s.install_dir}}/bin/kubectl config set-credentials kube-proxy \
-        --token={{TOKEN}} \
-        --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+        --client-certificate={{ k8s.etc_dir }}/kube-proxy/kube-proxy.pem \
+        --client-key={{ k8s.etc_dir }}/kube-proxy/kube-proxy-key.pem \
+        --embed-certs=false \
+        --kubeconfig={{ k8s.etc_dir }}/kube-proxy.kubeconfig"
 
 - name: set kube-proxy.kubeconfig context
   shell: "{{k8s.install_dir}}/bin/kubectl config set-context default \
     --cluster=kubernetes \
     --user=kube-proxy \
-    --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+    --kubeconfig={{ k8s.etc_dir }}/kube-proxy.kubeconfig"
 
 - name: select default use context
-  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{k8s.etc_dir}}/kube-proxy.kubeconfig"
+  shell: "{{k8s.install_dir}}/bin/kubectl config use-context default --kubeconfig={{ k8s.etc_dir }}/kube-proxy.kubeconfig"
 
 - name: Write kube-proxy.service file
   template: src=kube-proxy.service.j2 dest=/lib/systemd/system/kube-proxy.service

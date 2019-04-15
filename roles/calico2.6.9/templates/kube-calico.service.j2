@@ -7,12 +7,12 @@ Requires=docker.service
 User=root
 PermissionsStartOnly=true
 ExecStart=/usr/bin/docker run --net=host --privileged --name=calico-node \
-  -e ETCD_ENDPOINTS={{ETCD_NODES}} \
+  -e ETCD_ENDPOINTS={{ ETCD_ENDPOINTS }} \
   -e CALICO_LIBNETWORK_ENABLED=true \
   -e CALICO_NETWORKING_BACKEND=bird \
   -e CALICO_DISABLE_FILE_LOGGING=true \
-  -e CALICO_IPV4POOL_CIDR={{ipv4_cidr}} \
-  -e CALICO_IPV4POOL_IPIP=off \
+  -e CALICO_IPV4POOL_CIDR={{ CALICO_IPV4POOL_CIDR }} \
+  -e CALICO_IPV4POOL_IPIP={{ CALICO_IPV4POOL_IPIP }} \
   -e FELIX_DEFAULTENDPOINTTOHOSTACTION=ACCEPT \
   -e FELIX_IPV6SUPPORT=false \
   -e FELIX_LOGSEVERITYSCREEN=info \
@@ -23,7 +23,7 @@ ExecStart=/usr/bin/docker run --net=host --privileged --name=calico-node \
   -v /lib/modules:/lib/modules \
   -v /run/docker/plugins:/run/docker/plugins \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v {{calico.log_dir}}:/var/log/calico \
+  -v {{ calico.log_dir }}:/var/log/calico \
   registry:5000/calico/node:v2.6.9
 ExecStop=/usr/bin/docker rm -f calico-node
 Restart=always

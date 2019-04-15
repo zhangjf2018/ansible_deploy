@@ -1,0 +1,52 @@
+---
+- name: "create install dir {{kubectl.install_dir}}/bin"
+  file: path={{kubectl.install_dir}}/bin state=directory
+
+- name: copy files to remote host {{kubectl.install_dir}}
+  copy: src={{kubectl.bin_dir}}/kubectl dest={{kubectl.install_dir}}/bin/kubectl mode=0755
+
+- name: "create k8s data directory."
+  file: path={{item}} state=directory
+  with_items:
+    - "{{ CA_DIR }}/admin"
+
+- name: 准备kubectl使用的admin 证书签名请求
+  template: src=admin-csr.json.j2 dest={{CA_DIR}}/admin/admin-csr.json
+
+- name: 创建admin证书与私钥
+  shell: "cd {{ CA_DIR }}/admin && {{ CFSSL_INSTALL_DIR }}/bin/cfssl gencert \
+        -ca={{ CA_DIR }}/ca.pem \
+        -ca-key={{ CA_DIR }}/ca-key.pem \
+        -config={{ CA_DIR }}/ca-config.json \
+        -profile=kubernetes admin-csr.json | {{ CFSSL_INSTALL_DIR }}/bin/cfssljson -bare admin"
+
+# 创建kubectl kubeconfig 文件
+- name: 设置集群参数
+  shell: "{{ kubectl.install_dir }}/bin/kubectl config set-cluster kubernetes \
+	--certificate-authority={{ CA_DIR }}/ca.pem \
+	--embed-certs=false \
+	--server={{ KUBE_APISERVER }}"
+
+- name: 设置客户端认证参数
+  shell: "{{ kubectl.install_dir }}/bin/kubectl config set-credentials admin \
+	--client-certificate={{ CA_DIR }}/admin/admin.pem \
+	--embed-certs=false \
+	--client-key={{ CA_DIR }}/admin/admin-key.pem"
+
+- name: 设置上下文参数
+  shell: "{{ kubectl.install_dir }}/bin/kubectl config set-context kubernetes \
+	--cluster=kubernetes --user=admin"
+
+- name: 选择默认上下文
+  shell: "{{ kubectl.install_dir }}/bin/kubectl config use-context kubernetes"
+
+- name: set kubectl env {{kubectl.env_file}}
+  tags: env
+  lineinfile: dest={{kubectl.env_file}} insertafter="{{item.position}}" line="{{item.value}}" state=present
+  with_items:
+    - {position: EOF, value: "#########K8S ENV########"}
+    - {position: EOF, value: "export KUBERNETES_HOME={{kubectl.install_dir}}"}
+    - {position: EOF, value: "export PATH=$KUBERNETES_HOME/bin:$PATH"}
+  notify:
+    - enable env
+

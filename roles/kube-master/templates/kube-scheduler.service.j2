@@ -3,13 +3,14 @@ Description=Kubernetes Scheduler
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
-ExecStart={{k8s.install_dir}}/bin/kube-scheduler \
+ExecStart={{ k8s.install_dir }}/bin/kube-scheduler \
   --address=127.0.0.1 \
-  --master={{API_SERVER_HOST}} \
-  --log-dir={{k8s.ks_log_dir}} \
+  --kubeconfig={{ CA_DIR }}/kube-scheduler/kube-scheduler.kubeconfig
+  --log-dir={{ k8s.log_dir }} \
   --logtostderr=false \
   --leader-elect=true \
   --v=2
+
 Restart=on-failure
 RestartSec=5
 [Install]

@@ -1,0 +1,4 @@
+---
+
+- name: enable env
+  shell: "source {{kubelet.env_file}}"

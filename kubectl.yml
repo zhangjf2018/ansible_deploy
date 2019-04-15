@@ -1,0 +1,5 @@
+---
+- hosts: kubectl
+  #remote_user: root
+  roles:  
+   - kubectl

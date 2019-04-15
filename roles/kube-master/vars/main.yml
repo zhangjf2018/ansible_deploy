@@ -4,17 +4,17 @@ k8s:
  install_dir: /opt/kubernetes
  env_file: /etc/profile
  etc_dir: /etc/kubernetes
- log_dir: /data/kubernetes/kube_apiserver_log
- kcm_log_dir: /data/kubernetes/kube_controller_manager_log
- ks_log_dir: /data/kubernetes/kube_scheduler_log
+ log_dir: /data/kubernetes/log
 
 # apiserver http port
 INSECURE_PORT: 5888
 # scheduler controller-manager 中的master url 配置
 # 集群 MASTER IP, 需要负载均衡，一般为VIP地址
-API_SERVER_HOST: http://172.18.201.9:6888
+#API_SERVER_HOST: http://172.18.201.9:6888
+KUBE_APISERVER: https://172.18.201.9:7443
 # 集群 MASTER IP, 需要负载均衡，一般为VIP地址
-MASTER_IP: 172.18.201.9
+#MASTER_IP: 172.18.201.9
+API_SERVER_HA_HOST: 172.18.201.9
 # kubernetes 服务 IP (预分配，一般是 SERVICE_CIDR 中第一个IP)
 CLUSTER_KUBERNETES_SVC_IP: 10.68.0.1
 

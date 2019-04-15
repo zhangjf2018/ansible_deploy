@@ -4,8 +4,8 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart={{k8s.install_dir}}/bin/kube-controller-manager \
   --address=127.0.0.1 \
-  --master={{API_SERVER_HOST}} \
   --allocate-node-cidrs=true \
+  --kubeconfig={{ CA_DIR }}/kube-controller-manager/kube-controller-manager.kubeconfig \
   --service-cluster-ip-range={{SERVICE_CLUSTER_IP_RANGE}} \
   --cluster-cidr={{CLUSTER_CIDR}} \
   --cluster-name=kubernetes \
@@ -13,10 +13,17 @@ ExecStart={{k8s.install_dir}}/bin/kube-controller-manager \
   --cluster-signing-key-file={{CA_DIR}}/ca-key.pem \
   --service-account-private-key-file={{CA_DIR}}/ca-key.pem \
   --root-ca-file={{CA_DIR}}/ca.pem \
-  --log-dir={{k8s.kcm_log_dir}} \
+  --feature-gates=RotateKubeletServerCertificate=true \
+  --experimental-cluster-signing-duration=87600h0m0s \
+  --use-service-account-credentials=true \
+  --node-monitor-grace-period=40s \
+  --node-monitor-period=5s \
+  --pod-eviction-timeout=5m0s \
+  --log-dir={{k8s.log_dir}} \
   --logtostderr=false \
   --leader-elect=true \
   --v=2
+
 Restart=on-failure
 RestartSec=5
 [Install]

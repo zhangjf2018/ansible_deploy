@@ -7,5 +7,8 @@ calico:
  log_dir: /data/calico/log
  conf_dir: /etc/calico
 
-ETCD_NODES: "http://172.18.201.10:2379,http://172.18.201.11:2379,http://172.18.201.12:2379"
-ipv4_cidr: 172.20.0.0/16
+ETCD_ENDPOINTS: "http://172.18.201.10:2379,http://172.18.201.11:2379,http://172.18.201.12:2379"
+CALICO_IPV4POOL_CIDR: 172.20.0.0/16
+# off always cross-subnet 
+# https://docs.projectcalico.org/v2.6/reference/node/configuration
+CALICO_IPV4POOL_IPIP: cross-subnet
