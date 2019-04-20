@@ -15,7 +15,7 @@ cni:
  etc_dir: /etc/cni/net.d
 
 # 指向apiserver负载地址
-KUBE_APISERVER: http://172.18.201.9:6888
+KUBE_APISERVER: https://172.18.201.9:7443
 CLUSTER_DNS: 10.68.0.2
 CLUSTER_DOMAIN: cluster.local.
 CA_DIR: /etc/kubernetes/ca

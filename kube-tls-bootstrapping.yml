@@ -1,0 +1,5 @@
+---
+- hosts: kube-tls-bootstrapping
+  #remote_user: root
+  roles:  
+   - kube-tls-bootstrapping

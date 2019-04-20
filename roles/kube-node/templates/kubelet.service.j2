@@ -12,8 +12,6 @@ ExecStart={{ k8s.install_dir }}/bin/kubelet \
   --hostname-override={{ NODE_IP }} \
   --pod-infra-container-image={{ PAUSE_IAMGE }} \
   --experimental-bootstrap-kubeconfig={{ k8s.etc_dir }}/bootstrap.kubeconfig \
-  --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true \
-  --rotate-certificates \
   --hairpin-mode hairpin-veth \
   --cert-dir={{ k8s.etc_dir }}/kubelet \
   --network-plugin=cni \
@@ -28,6 +26,9 @@ ExecStart={{ k8s.install_dir }}/bin/kubelet \
   --root-dir={{ k8s.kubelet_work_dir }} \
   --log-dir={{ k8s.kubelet_log_dir }} \
   --v=2
+
+#--feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true 
+#--rotate-certificates
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65536

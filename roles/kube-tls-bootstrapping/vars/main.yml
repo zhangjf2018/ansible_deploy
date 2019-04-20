@@ -1,4 +1,4 @@
 ---
 k8s:
  etc_dir: /etc/kubernetes
- install_dir: /opt/install_dir
+ install_dir: /opt/kubernetes
